@@ -38,6 +38,23 @@ class ViewController: UIViewController {
         rgbView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
     }
     
+    @IBAction func redSliderAction() {
+        redAlphaLabel.text = String(round(100 * Double(redSlider.value)) / 100)
+        red = CGFloat(redSlider.value)
+        rgbView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
+    }
+    
+    @IBAction func greenSliderAction() {
+        greenAlphaLabel.text = String(round(100 * Double(greenSlider.value)) / 100)
+        green = CGFloat(greenSlider.value)
+        rgbView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
+    }
+    @IBAction func blueSliderAction() {
+        blueAlphaLabel.text = String(round(100 * Double(blueSlider.value)) / 100)
+        blue = CGFloat(blueSlider.value)
+        rgbView.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
+    }
+    
 }
 
     
