@@ -20,10 +20,9 @@ class SettingsViewController: UIViewController {
     @IBOutlet var greenSlider: UISlider!
     @IBOutlet var blueSlider: UISlider!
 
-    @IBOutlet var redTF: UITextField!
+    @IBOutlet var redTF: UITextField! 
     @IBOutlet var greenTF: UITextField!
     @IBOutlet var blueTF: UITextField!
-    
     
     var red: Float = 0.0
     var green: Float = 0.0
@@ -31,44 +30,46 @@ class SettingsViewController: UIViewController {
     
     var delegate: SettingsViewControllerDelegate!
     
-    
-    var color: UIColor!
-    
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        redTF.delegate = self
+        greenTF.delegate = self
+        blueTF.delegate = self
         
         rgbView.layer.cornerRadius = 10
         
-        redSlider.value = red
-        greenSlider.value = green
-        blueSlider.value = blue
+        redTF.text = roundSliderValue(for: red)
+        greenTF.text = roundSliderValue(for: green)
+        blueTF.text = roundSliderValue(for: blue)
+        
+        changeSliderFromTF()
+        changeAlphaLabelFromTF()
     
-        redAlphaLabel.text = String(redSlider.value)
-        greenAlphaLabel.text = String(greenSlider.value)
-        blueAlphaLabel.text = String(blueSlider.value)
+        rgbView.backgroundColor = setBackgroundColor()
+    }
+    
+    @IBAction func rgbSlider(_ sender: UISlider) {
         
         rgbView.backgroundColor = setBackgroundColor()
         
-    }
-    
-    @IBAction func redSliderAction() {
         redAlphaLabel.text = roundSliderValue(for: redSlider.value)
-        rgbView.backgroundColor = setBackgroundColor()
+        greenAlphaLabel.text = roundSliderValue(for: greenSlider.value)
+        blueAlphaLabel.text = roundSliderValue(for: blueSlider.value)
+        
+        redTF.text = roundSliderValue(for: redSlider.value)
+        greenTF.text = roundSliderValue(for: greenSlider.value)
+        blueTF.text = roundSliderValue(for: blueSlider.value)
     }
     
-    @IBAction func greenSliderAction() {
-        greenAlphaLabel.text = roundSliderValue(for: greenSlider.value)
-        rgbView.backgroundColor = setBackgroundColor()
-    }
-    @IBAction func blueSliderAction() {
-        blueAlphaLabel.text = roundSliderValue(for: blueSlider.value)
-        rgbView.backgroundColor = setBackgroundColor()
+    @IBAction func fillTF(_ sender: UITextField) {
+
     }
     
     @IBAction func cancelSettings() {
-        delegate.setNewColor(from: CGFloat(redSlider.value), greenColor: CGFloat(greenSlider.value), blueColor: CGFloat(blueSlider.value))
+        delegate.setNewColor(from: CGFloat(redSlider.value),
+                             greenColor: CGFloat(greenSlider.value),
+                             blueColor: CGFloat(blueSlider.value))
         dismiss(animated: true)
     }
     private func setBackgroundColor () -> UIColor {
@@ -81,7 +82,53 @@ class SettingsViewController: UIViewController {
     private func roundSliderValue (for value: Float) -> String {
         return String(round(100 * Double(value)) / 100)
     }
+    
+    private func changeSliderFromTF() {
+    
+        redSlider.value = Float(redTF.text!)!
+        greenSlider.value = Float(greenTF.text!)!
+        blueSlider.value = Float(blueTF.text!)!
+    }
+    
+    private func changeAlphaLabelFromTF () {
+        redAlphaLabel.text = redTF.text
+        blueAlphaLabel.text = blueTF.text
+        greenAlphaLabel.text = greenTF.text
+    }
+    
+    private func showAlert(with title: String, and message: String) {
+        let alert = UIAlertController(title: title,
+                                      message: message,
+                                      preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default)
+        alert.addAction(okAction)
+        present(alert, animated: true)
+    }
+    
+}
 
+extension SettingsViewController: UITextFieldDelegate {
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        view.endEditing(true)
+    }
+
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if (Float(textField.text!)! < 0) || (Float(textField.text!)! > 1) {
+            showAlert(with: "Wrong number!", and: "Write number in range from 0 to 1")
+            textField.text = ""
+            return
+        }
+        changeSliderFromTF()
+        changeAlphaLabelFromTF()
+        rgbView.backgroundColor = setBackgroundColor()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }
 
     
