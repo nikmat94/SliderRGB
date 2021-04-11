@@ -9,7 +9,6 @@ import UIKit
 
 class SettingsViewController: UIViewController {
 
-    
     @IBOutlet var rgbView: UIView!
     
     @IBOutlet var redAlphaLabel: UILabel!
@@ -29,6 +28,11 @@ class SettingsViewController: UIViewController {
     var blue: Float = 0.0
     
     var delegate: SettingsViewControllerDelegate!
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        view.endEditing(true)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,7 +67,6 @@ class SettingsViewController: UIViewController {
     }
     
     @IBAction func fillTF(_ sender: UITextField) {
-
     }
     
     @IBAction func cancelSettings() {
@@ -104,22 +107,16 @@ class SettingsViewController: UIViewController {
         alert.addAction(okAction)
         present(alert, animated: true)
     }
-    
 }
 
 extension SettingsViewController: UITextFieldDelegate {
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        view.endEditing(true)
-    }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        if (Float(textField.text!)! < 0) || (Float(textField.text!)! > 1) {
+        if (Float(textField.text!) ?? 1 < 0) || (Float(textField.text!) ?? 1 > 1) || Float(textField.text?.count ?? 1) > 4 {
             showAlert(with: "Wrong number!", and: "Write number in range from 0 to 1")
-            textField.text = ""
             return
         }
+        
         changeSliderFromTF()
         changeAlphaLabelFromTF()
         rgbView.backgroundColor = setBackgroundColor()
