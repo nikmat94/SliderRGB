@@ -13,20 +13,17 @@ protocol SettingsViewControllerDelegate {
 
 class MainViewController: UIViewController {
 
-    var red: CGFloat = 1
-    var green: CGFloat = 1
-    var blue: CGFloat = 0
+    private var red: CGFloat = 1
+    private var green: CGFloat = 1
+    private var blue: CGFloat = 0
     
     private var color: UIColor {
-        UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
+        UIColor(displayP3Red: 1, green: green, blue: blue, alpha: 1)
     }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
-        
-
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -45,6 +42,4 @@ extension MainViewController: SettingsViewControllerDelegate {
         blue = blueColor
         view.backgroundColor = UIColor(displayP3Red: red, green: green, blue: blue, alpha: 1)
     }
-    
-    
 }
